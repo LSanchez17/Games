@@ -24,11 +24,21 @@ type InstallPromptEvent = Event & {
 
 function App() {
   const [progress, setProgress] = useState<ProgressData>(() => loadProgress())
-  const [selectedLevel, setSelectedLevel] = useState<number>(() => loadProgress().unlockedLevel)
-  const [tiles, setTiles] = useState<Tile[]>(() => createTilesForLevel(levels[0]))
+  const [selectedLevel, setSelectedLevel] = useState<number>(() =>
+    Math.min(levels.length, Math.max(1, loadProgress().unlockedLevel)),
+  )
+  const [tiles, setTiles] = useState<Tile[]>(() => {
+    const initialLevelId = Math.min(levels.length, Math.max(1, loadProgress().unlockedLevel))
+    const initialLevel = levels.find((entry) => entry.id === initialLevelId) ?? levels[0]
+    return createTilesForLevel(initialLevel)
+  })
   const [selectedTileId, setSelectedTileId] = useState<number | null>(null)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
-  const [shufflesRemaining, setShufflesRemaining] = useState(levels[0].maxShuffles)
+  const [shufflesRemaining, setShufflesRemaining] = useState(() => {
+    const initialLevelId = Math.min(levels.length, Math.max(1, loadProgress().unlockedLevel))
+    const initialLevel = levels.find((entry) => entry.id === initialLevelId) ?? levels[0]
+    return initialLevel.maxShuffles
+  })
   const [hintPair, setHintPair] = useState<[number, number] | null>(null)
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<InstallPromptEvent | null>(null)
 
@@ -37,6 +47,16 @@ function App() {
   const completedCount = progress.completedLevels.length
   const completionPercent = (completedCount / levels.length) * 100
   const allMatched = tiles.every((tile) => tile.matched)
+
+  function resetLevel(levelId: number) {
+    const activeLevel = levels.find((entry) => entry.id === levelId) ?? levels[0]
+
+    setTiles(createTilesForLevel(activeLevel))
+    setSelectedTileId(null)
+    setElapsedSeconds(0)
+    setShufflesRemaining(activeLevel.maxShuffles)
+    setHintPair(null)
+  }
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -62,10 +82,6 @@ function App() {
   useEffect(() => {
     saveProgress(progress)
   }, [progress])
-
-  useEffect(() => {
-    resetLevel(level.id)
-  }, [level.id])
 
   const availableMatch = hasAvailableMatch(tiles)
 
@@ -147,6 +163,11 @@ function App() {
     setHintPair(getFirstHint(tiles))
   }
 
+  const handleLevelChange = (levelId: number) => {
+    setSelectedLevel(levelId)
+    resetLevel(levelId)
+  }
+
   const shuffle = () => {
     if (shufflesRemaining <= 0 || allMatched) {
       return
@@ -156,16 +177,6 @@ function App() {
     setSelectedTileId(null)
     setHintPair(null)
     setShufflesRemaining((value) => value - 1)
-  }
-
-  function resetLevel(levelId: number) {
-    const activeLevel = levels.find((entry) => entry.id === levelId) ?? levels[0]
-
-    setTiles(createTilesForLevel(activeLevel))
-    setSelectedTileId(null)
-    setElapsedSeconds(0)
-    setShufflesRemaining(activeLevel.maxShuffles)
-    setHintPair(null)
   }
 
   return (
@@ -192,7 +203,7 @@ function App() {
               <select
                 id="level-select"
                 value={selectedLevel}
-                onChange={(event) => setSelectedLevel(Number(event.target.value))}
+                onChange={(event) => handleLevelChange(Number(event.target.value))}
                 className="h-10 w-full rounded-md border border-slate-700 bg-slate-900 px-3 text-sm"
               >
                 {levels.map((entry) => (
