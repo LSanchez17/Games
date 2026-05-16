@@ -261,7 +261,7 @@ function App() {
   )
 
   return (
-    <main className="min-h-screen bg-slate-950 p-3 pt-16 text-slate-100 sm:p-4 sm:pt-16 md:p-8 md:pt-16 lg:pt-8">
+    <main className="min-h-screen bg-slate-950 p-3 pt-16 text-slate-100 sm:p-4 md:p-8 lg:pt-8">
       <Button
         type="button"
         variant="outline"
@@ -274,7 +274,7 @@ function App() {
       </Button>
 
       <div className="mx-auto grid max-w-6xl gap-4 md:gap-6 lg:grid-cols-[340px_1fr]">
-        <Card className={isMobileMenuOpen ? 'block lg:block' : 'hidden lg:block'}>
+        <Card className={`${isMobileMenuOpen ? 'block' : 'hidden'} lg:block`}>
           {controlsPanel}
         </Card>
 
