@@ -106,10 +106,10 @@ function App() {
 
     if (firstTile.value === secondTile.value) {
       const updatedTiles = tiles.map((tile) =>
-          tile.id === firstTile.id || tile.id === secondTile.id
-            ? { ...tile, matched: true }
-            : tile,
-        )
+        tile.id === firstTile.id || tile.id === secondTile.id
+          ? { ...tile, matched: true }
+          : tile,
+      )
 
       setTiles(updatedTiles)
       const levelCleared = updatedTiles.every((tile) => tile.matched)

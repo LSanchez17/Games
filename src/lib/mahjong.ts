@@ -141,9 +141,12 @@ export function shuffleUnmatchedTiles(tiles: Tile[], seed: number): Tile[] {
       return tile
     }
 
+    const value = shuffledValues[valueIndex]
+    valueIndex += 1
+
     return {
       ...tile,
-      value: shuffledValues[valueIndex++],
+      value,
     }
   })
 }
