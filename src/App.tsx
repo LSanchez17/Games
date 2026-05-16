@@ -261,7 +261,7 @@ function App() {
   )
 
   return (
-    <main className="min-h-screen bg-slate-950 p-3 pt-16 text-slate-100 sm:p-4 sm:pt-16 md:p-8 md:pt-8">
+    <main className="min-h-screen bg-slate-950 p-3 pt-16 text-slate-100 sm:p-4 sm:pt-16 md:p-8 md:pt-16 lg:pt-8">
       <Button
         type="button"
         variant="outline"
