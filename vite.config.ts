@@ -6,26 +6,27 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: '/Games/',
   plugins: [
     react(),
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
-      manifest: {
-        name: 'Mahjong Journey',
-        short_name: 'Mahjong',
-        description: 'Offline Mahjong progression game with 300 local levels.',
-        theme_color: '#020617',
-        background_color: '#020617',
-        display: 'standalone',
-        start_url: '/',
-        icons: [
-          {
-            src: '/favicon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
-          },
+        manifest: {
+          name: 'Mahjong Journey',
+          short_name: 'Mahjong',
+          description: 'Offline Mahjong progression game with 300 local levels.',
+          theme_color: '#020617',
+          background_color: '#020617',
+          display: 'standalone',
+          start_url: '/Games/',
+          icons: [
+            {
+              src: 'favicon.svg',
+              sizes: 'any',
+              type: 'image/svg+xml',
+            },
         ],
       },
       workbox: {
