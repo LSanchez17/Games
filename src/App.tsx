@@ -11,16 +11,11 @@ import {
   hasAvailableMatch,
   isTileSelectable,
   shuffleUnmatchedTiles,
-  type Tile,
 } from '@/lib/mahjong'
-import { loadProgress, saveProgress, type ProgressData } from '@/lib/storage'
+import { loadProgress, saveProgress } from '@/lib/storage'
+import type { InstallPromptEvent, ProgressData, Tile } from '@/lib/types'
 
 const levels = generateLevels()
-
-type InstallPromptEvent = Event & {
-  prompt: () => Promise<void>
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>
-}
 
 function App() {
   const [progress, setProgress] = useState<ProgressData>(() => loadProgress())

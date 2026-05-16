@@ -1,21 +1,4 @@
-export type Difficulty = 'Easy' | 'Medium' | 'Hard'
-
-export type LevelDefinition = {
-  id: number
-  difficulty: Difficulty
-  rows: number
-  cols: number
-  timeTargetSeconds: number
-  maxShuffles: number
-}
-
-export type Tile = {
-  id: number
-  value: string
-  row: number
-  col: number
-  matched: boolean
-}
+import type { LevelDefinition, Tile } from '@/lib/types'
 
 const TILE_SYMBOLS = [
   '🀇', '🀈', '🀉', '🀊', '🀋', '🀌', '🀍', '🀎', '🀏',

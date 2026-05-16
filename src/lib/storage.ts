@@ -1,10 +1,6 @@
-const STORAGE_KEY = 'mahjong-progress-v1'
+import type { ProgressData } from '@/lib/types'
 
-type ProgressData = {
-  unlockedLevel: number
-  completedLevels: number[]
-  bestTimes: Record<number, number>
-}
+const STORAGE_KEY = 'mahjong-progress-v1'
 
 const defaultProgress: ProgressData = {
   unlockedLevel: 1,
@@ -42,5 +38,3 @@ export function loadProgress(): ProgressData {
 export function saveProgress(progress: ProgressData) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(progress))
 }
-
-export type { ProgressData }
