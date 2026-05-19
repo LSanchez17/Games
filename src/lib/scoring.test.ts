@@ -1,12 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import {
-  BASE_POINTS,
-  NO_SHUFFLE_RETRY_BONUS,
-  TIME_BONUS_TIERS,
-  calculateScore,
-  getTotalPoints,
-} from '@/lib/scoring'
+import { BASE_POINTS, NO_SHUFFLE_RETRY_BONUS, TIME_BONUS_TIERS } from '@/lib/constants'
+import { calculateScore, getTotalPoints } from '@/lib/scoring'
 
 describe('calculateScore', () => {
   it('returns base points + max time bonus + clean bonus for a fast clean run', () => {

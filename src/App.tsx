@@ -14,8 +14,7 @@ import {
 } from '@/lib/mahjong'
 import { calculateScore, getTotalPoints } from '@/lib/scoring'
 import { loadProgress, saveProgress } from '@/lib/storage'
-import type { InstallPromptEvent, ProgressData, Tile } from '@/lib/types'
-import type { ScoreBreakdown } from '@/lib/scoring'
+import type { InstallPromptEvent, ProgressData, ScoreBreakdown, Tile } from '@/lib/types'
 
 const levels = generateLevels()
 
