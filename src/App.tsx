@@ -304,14 +304,17 @@ function App() {
                     onClick={() => handleTileClick(tile.id)}
                     disabled={tile.matched || !selectable || allMatched}
                     className={[
-                      'aspect-square rounded-md border text-4xl leading-none transition-all md:text-5xl',
+                      'aspect-square rounded-md border text-4xl leading-none transition-all md:text-5xl focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',
                       tile.matched
                         ? 'border-transparent bg-slate-900/40 text-transparent'
                         : 'border-slate-200 bg-slate-100 text-slate-900 hover:bg-white',
-                      isSelected ? 'ring-2 ring-violet-400' : '',
+                      isSelected
+                        ? 'scale-105 border-violet-700 bg-violet-200 text-violet-950 ring-4 ring-violet-500 ring-offset-2 ring-offset-slate-950 shadow-[0_0_0_2px_rgba(139,92,246,0.75)]'
+                        : '',
                       isHint ? 'ring-2 ring-amber-400' : '',
                       !selectable && !tile.matched ? 'opacity-60' : '',
                     ].join(' ')}
+                    aria-pressed={isSelected}
                     aria-label={tile.matched ? 'Matched tile' : `Tile ${tile.value}`}
                   >
                     {tile.matched ? '·' : tile.value}
