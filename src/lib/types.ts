@@ -21,6 +21,7 @@ export type ProgressData = {
   unlockedLevel: number
   completedLevels: number[]
   bestTimes: Record<number, number>
+  highScores: Record<number, number>
 }
 
 export type InstallPromptEvent = Event & {

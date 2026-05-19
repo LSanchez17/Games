@@ -39,6 +39,7 @@ describe('storage', () => {
       unlockedLevel: 1,
       completedLevels: [],
       bestTimes: {},
+      highScores: {},
     })
   })
 
@@ -47,6 +48,7 @@ describe('storage', () => {
       unlockedLevel: 4,
       completedLevels: [1, 2, 3],
       bestTimes: { 3: 120 },
+      highScores: { 1: 250, 2: 300, 3: 150 },
     }
 
     saveProgress(progress)
@@ -59,12 +61,29 @@ describe('storage', () => {
       unlockedLevel: -10,
       completedLevels: [1, 'bad', 2],
       bestTimes: { foo: 10, 2: 90 },
+      highScores: { foo: 10, 3: -5, 2: 200 },
     }))
 
     expect(loadProgress()).toEqual({
       unlockedLevel: 1,
       completedLevels: [1, 2],
       bestTimes: { 2: 90 },
+      highScores: { 2: 200 },
+    })
+  })
+
+  it('returns empty highScores when field is missing from saved data', () => {
+    globalThis.localStorage.setItem('mahjong-progress-v1', JSON.stringify({
+      unlockedLevel: 2,
+      completedLevels: [1],
+      bestTimes: { 1: 60 },
+    }))
+
+    expect(loadProgress()).toEqual({
+      unlockedLevel: 2,
+      completedLevels: [1],
+      bestTimes: { 1: 60 },
+      highScores: {},
     })
   })
 })
