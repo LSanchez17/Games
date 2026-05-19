@@ -182,6 +182,11 @@ function App() {
     setIsMobileMenuOpen(false)
   }
 
+  const handleRestart = () => {
+    setUsedShuffleOrRetry(true)
+    resetLevel(level.id)
+  }
+
   const shuffle = () => {
     if (shufflesRemaining <= 0 || allMatched) {
       return
@@ -256,7 +261,7 @@ function App() {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <Button variant="secondary" onClick={() => { setUsedShuffleOrRetry(true); resetLevel(level.id) }}>Restart</Button>
+          <Button variant="secondary" onClick={handleRestart}>Restart</Button>
           <Button variant="outline" onClick={showHint}><Lightbulb className="size-4" />Hint</Button>
           <Button variant="outline" onClick={shuffle} disabled={shufflesRemaining <= 0}>
             <Shuffle className="size-4" />Shuffle
