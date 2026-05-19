@@ -16,6 +16,8 @@ import { loadProgress, saveProgress } from '@/lib/storage'
 import type { InstallPromptEvent, ProgressData, Tile } from '@/lib/types'
 
 const levels = generateLevels()
+const selectedTileClasses =
+  'scale-105 border-violet-700 bg-violet-200 text-violet-950 ring-4 ring-violet-500 ring-offset-2 ring-offset-slate-950 shadow-[0_0_0_2px_rgba(139,92,246,0.75)]'
 
 function App() {
   const [progress, setProgress] = useState<ProgressData>(() => loadProgress())
@@ -43,8 +45,6 @@ function App() {
   const completedCount = progress.completedLevels.length
   const completionPercent = (completedCount / levels.length) * 100
   const allMatched = tiles.every((tile) => tile.matched)
-  const selectedTileClasses =
-    'scale-105 border-violet-700 bg-violet-200 text-violet-950 ring-4 ring-violet-500 ring-offset-2 ring-offset-slate-950 shadow-[0_0_0_2px_rgba(139,92,246,0.75)]'
 
   function resetLevel(levelId: number) {
     const activeLevel = levels.find((entry) => entry.id === levelId) ?? levels[0]
@@ -306,12 +306,12 @@ function App() {
                     onClick={() => handleTileClick(tile.id)}
                     disabled={tile.matched || !selectable || allMatched}
                     className={[
-                      'aspect-square rounded-md border text-4xl leading-none transition-all md:text-5xl focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950',
+                      'aspect-square rounded-md border text-4xl leading-none transition-all md:text-5xl focus-visible:outline-2 focus-visible:outline-sky-400 focus-visible:outline-offset-2',
                       tile.matched
                         ? 'border-transparent bg-slate-900/40 text-transparent'
                         : 'border-slate-200 bg-slate-100 text-slate-900 hover:bg-white',
                       isSelected ? selectedTileClasses : '',
-                      isHint ? 'ring-2 ring-amber-400' : '',
+                      isHint && !isSelected ? 'ring-2 ring-amber-400' : '',
                       !selectable && !tile.matched ? 'opacity-60' : '',
                     ].join(' ')}
                     aria-pressed={isSelected}
