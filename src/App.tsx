@@ -43,6 +43,8 @@ function App() {
   const completedCount = progress.completedLevels.length
   const completionPercent = (completedCount / levels.length) * 100
   const allMatched = tiles.every((tile) => tile.matched)
+  const selectedTileClasses =
+    'scale-105 border-violet-700 bg-violet-200 text-violet-950 ring-4 ring-violet-500 ring-offset-2 ring-offset-slate-950 shadow-[0_0_0_2px_rgba(139,92,246,0.75)]'
 
   function resetLevel(levelId: number) {
     const activeLevel = levels.find((entry) => entry.id === levelId) ?? levels[0]
@@ -308,9 +310,7 @@ function App() {
                       tile.matched
                         ? 'border-transparent bg-slate-900/40 text-transparent'
                         : 'border-slate-200 bg-slate-100 text-slate-900 hover:bg-white',
-                      isSelected
-                        ? 'scale-105 border-violet-700 bg-violet-200 text-violet-950 ring-4 ring-violet-500 ring-offset-2 ring-offset-slate-950 shadow-[0_0_0_2px_rgba(139,92,246,0.75)]'
-                        : '',
+                      isSelected ? selectedTileClasses : '',
                       isHint ? 'ring-2 ring-amber-400' : '',
                       !selectable && !tile.matched ? 'opacity-60' : '',
                     ].join(' ')}
