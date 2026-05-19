@@ -304,7 +304,7 @@ function App() {
                     onClick={() => handleTileClick(tile.id)}
                     disabled={tile.matched || !selectable || allMatched}
                     className={[
-                      'aspect-square rounded-md border text-lg transition-all md:text-2xl',
+                      'aspect-square rounded-md border text-4xl leading-none transition-all md:text-5xl',
                       tile.matched
                         ? 'border-transparent bg-slate-900/40 text-transparent'
                         : 'border-slate-200 bg-slate-100 text-slate-900 hover:bg-white',
