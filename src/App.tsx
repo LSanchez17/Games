@@ -12,8 +12,9 @@ import {
   isTileSelectable,
   shuffleUnmatchedTiles,
 } from '@/lib/mahjong'
+import { calculateScore, getTotalPoints } from '@/lib/scoring'
 import { loadProgress, saveProgress } from '@/lib/storage'
-import type { InstallPromptEvent, ProgressData, Tile } from '@/lib/types'
+import type { InstallPromptEvent, ProgressData, ScoreBreakdown, Tile } from '@/lib/types'
 
 const levels = generateLevels()
 const selectedTileClasses =
@@ -39,6 +40,8 @@ function App() {
   const [hintPair, setHintPair] = useState<[number, number] | null>(null)
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<InstallPromptEvent | null>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [usedShuffleOrRetry, setUsedShuffleOrRetry] = useState(false)
+  const [lastScore, setLastScore] = useState<(ScoreBreakdown & { isNewRecord: boolean }) | null>(null)
 
   const level = useMemo(() => levels.find((entry) => entry.id === selectedLevel) ?? levels[0], [selectedLevel])
 
@@ -54,6 +57,7 @@ function App() {
     setElapsedSeconds(0)
     setShufflesRemaining(activeLevel.maxShuffles)
     setHintPair(null)
+    setLastScore(null)
   }
 
   useEffect(() => {
@@ -129,6 +133,11 @@ function App() {
       const levelCleared = updatedTiles.every((tile) => tile.matched)
 
       if (levelCleared) {
+        const score = calculateScore(level.difficulty, elapsedSeconds, usedShuffleOrRetry)
+        const previousBest = progress.highScores[level.id]
+        const isNewRecord = previousBest === undefined || score.total > previousBest
+        setLastScore({ ...score, isNewRecord })
+
         setProgress((previous) => {
           const existingTime = previous.bestTimes[level.id]
           const bestTimes = {
@@ -142,10 +151,16 @@ function App() {
 
           const nextLevel = Math.min(levels.length, Math.max(previous.unlockedLevel, level.id + 1))
 
+          const existingHighScore = previous.highScores[level.id] ?? 0
+          const highScores = score.total > existingHighScore
+            ? { ...previous.highScores, [level.id]: score.total }
+            : previous.highScores
+
           return {
             unlockedLevel: nextLevel,
             completedLevels,
             bestTimes,
+            highScores,
           }
         })
       }
@@ -163,8 +178,14 @@ function App() {
 
   const handleLevelChange = (levelId: number) => {
     setSelectedLevel(levelId)
+    setUsedShuffleOrRetry(false)
     resetLevel(levelId)
     setIsMobileMenuOpen(false)
+  }
+
+  const handleRestart = () => {
+    setUsedShuffleOrRetry(true)
+    resetLevel(level.id)
   }
 
   const shuffle = () => {
@@ -176,6 +197,7 @@ function App() {
     setSelectedTileId(null)
     setHintPair(null)
     setShufflesRemaining((value) => value - 1)
+    setUsedShuffleOrRetry(true)
   }
 
   const controlsPanel = (
@@ -233,10 +255,14 @@ function App() {
             <div className="text-slate-400">Shuffles</div>
             <div className="font-medium">{shufflesRemaining}</div>
           </div>
+          <div className="col-span-2 rounded-md bg-slate-800/70 p-2">
+            <div className="text-slate-400">Total Points</div>
+            <div className="font-medium">{getTotalPoints(progress.highScores).toLocaleString()} pts</div>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <Button variant="secondary" onClick={() => resetLevel(level.id)}>Restart</Button>
+          <Button variant="secondary" onClick={handleRestart}>Restart</Button>
           <Button variant="outline" onClick={showHint}><Lightbulb className="size-4" />Hint</Button>
           <Button variant="outline" onClick={shuffle} disabled={shufflesRemaining <= 0}>
             <Shuffle className="size-4" />Shuffle
@@ -248,10 +274,23 @@ function App() {
           ) : null}
         </div>
 
-        {allMatched ? (
+        {allMatched && lastScore ? (
           <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-200">
-            <div className="mb-1 flex items-center gap-2 font-medium"><Trophy className="size-4" />Level cleared!</div>
-            Best Time: {progress.bestTimes[level.id] ?? elapsedSeconds}s
+            <div className="mb-2 flex items-center gap-2 font-medium">
+              <Trophy className="size-4" />Level cleared!
+              {lastScore.isNewRecord && (
+                <span className="ml-auto text-xs text-amber-300">★ New record!</span>
+              )}
+            </div>
+            <div className="mb-1 text-lg font-bold text-emerald-100">{lastScore.total} pts</div>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-emerald-300">
+              <span>Base +{lastScore.base}</span>
+              {lastScore.timeBonus > 0 && <span>Time +{lastScore.timeBonus}</span>}
+              {lastScore.noShuffleBonus > 0 && <span>Clean +{lastScore.noShuffleBonus}</span>}
+            </div>
+            <div className="mt-2 text-xs text-emerald-400">
+              Best: {progress.highScores[level.id] ?? lastScore.total} pts · {progress.bestTimes[level.id] ?? elapsedSeconds}s
+            </div>
           </div>
         ) : !availableMatch ? (
           <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">

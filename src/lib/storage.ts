@@ -6,6 +6,7 @@ const defaultProgress: ProgressData = {
   unlockedLevel: 1,
   completedLevels: [],
   bestTimes: {},
+  highScores: {},
 }
 
 export function loadProgress(): ProgressData {
@@ -26,6 +27,14 @@ export function loadProgress(): ProgressData {
         ? Object.fromEntries(
             Object.entries(parsed.bestTimes).filter(
               ([key, value]) => Number.isInteger(Number(key)) && Number.isFinite(value as number),
+            ),
+          ) as Record<number, number>
+        : {},
+      highScores: typeof parsed.highScores === 'object' && parsed.highScores !== null
+        ? Object.fromEntries(
+            Object.entries(parsed.highScores).filter(
+              ([key, value]) =>
+                Number.isInteger(Number(key)) && Number.isFinite(value as number) && (value as number) >= 0,
             ),
           ) as Record<number, number>
         : {},
