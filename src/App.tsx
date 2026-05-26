@@ -61,12 +61,14 @@ function App() {
   }
 
   useEffect(() => {
+    if (allMatched) return
+
     const interval = window.setInterval(() => {
       setElapsedSeconds((value) => value + 1)
     }, 1000)
 
     return () => window.clearInterval(interval)
-  }, [level.id])
+  }, [level.id, allMatched])
 
   useEffect(() => {
     const onBeforeInstallPrompt = (event: Event) => {
