@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+
+import { useElapsedTimer } from '@/lib/useElapsedTimer'
 import { Download, Lightbulb, Menu, Shuffle, Trophy, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -31,7 +33,6 @@ function App() {
     return createTilesForLevel(initialLevel)
   })
   const [selectedTileId, setSelectedTileId] = useState<number | null>(null)
-  const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [shufflesRemaining, setShufflesRemaining] = useState(() => {
     const initialLevelId = Math.min(levels.length, Math.max(1, loadProgress().unlockedLevel))
     const initialLevel = levels.find((entry) => entry.id === initialLevelId) ?? levels[0]
@@ -49,26 +50,18 @@ function App() {
   const completionPercent = (completedCount / levels.length) * 100
   const allMatched = tiles.every((tile) => tile.matched)
 
+  const { elapsedSeconds, reset: resetElapsedSeconds } = useElapsedTimer(!allMatched)
+
   function resetLevel(levelId: number) {
     const activeLevel = levels.find((entry) => entry.id === levelId) ?? levels[0]
 
     setTiles(createTilesForLevel(activeLevel))
     setSelectedTileId(null)
-    setElapsedSeconds(0)
+    resetElapsedSeconds()
     setShufflesRemaining(activeLevel.maxShuffles)
     setHintPair(null)
     setLastScore(null)
   }
-
-  useEffect(() => {
-    if (allMatched) return
-
-    const interval = window.setInterval(() => {
-      setElapsedSeconds((value) => value + 1)
-    }, 1000)
-
-    return () => window.clearInterval(interval)
-  }, [level.id, allMatched])
 
   useEffect(() => {
     const onBeforeInstallPrompt = (event: Event) => {
