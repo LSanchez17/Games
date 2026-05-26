@@ -362,6 +362,13 @@ function App() {
               })}
             </div>
           </CardContent>
+          {!availableMatch && !allMatched && (
+            <div className="px-6 pb-4 lg:hidden">
+              <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">
+                No available matches right now. Use a hint or shuffle.
+              </div>
+            </div>
+          )}
         </Card>
       </div>
     </main>
